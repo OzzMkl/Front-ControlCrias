@@ -1,0 +1,203 @@
+<div class="container">
+    <br>
+    <h4 class="text-center">CRIAS SANAS</h4>
+    <br>
+    <div class="row">
+        <div class="col">
+            <!--  -->
+            <div class="input-group mb-2">
+                <div class="col-2">
+                    <select class="form-select" name="tipoBusqueda" [(ngModel)]="tipoBusqueda" (ngModelChange)="seleccionTipoBusqueda($event)">
+                        <option value="1" selected>id cria</option>
+                        <option value="2">nombre cria</option>
+                        <option value="3">nombre proveedor</option>
+                    </select>
+                </div>
+                <div class="col" *ngIf="tipoBusqueda==1;">
+                    <input class="form-control" type="text" placeholder="Buscar ..." name="idCria" [(ngModel)]="idCria">
+                </div>
+                <div class="col" *ngIf="tipoBusqueda==2;">
+                    <input class="form-control" type="text" placeholder="Buscar ..." name="nombreCria" [(ngModel)]="nombreCria">
+                </div>
+                <div class="col" *ngIf="tipoBusqueda==3;">
+                    <input class="form-control" type="text" placeholder="Buscar ..." name="nombreProveedor" [(ngModel)]="nombreProveedor">
+                </div>
+            </div>
+            <!--  -->
+            
+        </div>
+    </div>
+    <br>
+    <div class="text-center text-primary" *ngIf="isLoading">
+        <div class="spinner-border" role="status" >
+            <span class="visually-hidden">Loading...</span>
+          </div>
+    </div>
+    <div *ngIf="!isLoading">
+        <table class="table table-dark table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">NOMBRE</th>
+                    <th scope="col">PROVEEDOR</th>
+                    <th scope="col">PESO (KG)</th>
+                    <th scope="col">COSTO</th>
+                    <th scope="col">ID SENSOR</th>
+                    <th scope="col">STATUS</th>
+                    <th scope="col">CORRAL</th>
+                </tr>
+            </thead>
+            <tbody *ngFor="let cria of crias | nombreCria: nombreCria |nombreProveedor: nombreProveedor |idCria:idCria">
+                <tr (click)="buscaCriaID(cria.id_cria)" (click)="open(content)">
+                    <th scope="row">{{cria.id_cria}}</th>
+                    <th scope="row">{{cria.nombre}}</th>
+                    <th scope="row">{{cria.nombreProveedor}}</th>
+                    <th scope="row">{{cria.peso}}</th>
+                    <th scope="row">{{cria.costo | currency}}</th>
+                    <th scope="row">{{cria.id_sensor}}</th>
+                    <th scope="row">{{cria.nombreStatus}}</th>
+                    <th scope="row">{{cria.nombreCorral}}</th>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<!-- Modal detalles cria-->
+<ng-template #content let-modal>
+    <div *ngFor="let cria of detallesCria">
+        <div class="modal-header" >
+            <h4 class="modal-title" id="modal-basic-title">Cria #{{cria.id_cria}}</h4>
+            <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+        </div>
+          <div class="modal-body">
+            <form>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-6">
+                            <h3>{{cria.nombre}}</h3>
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-primary" type="button" (click)="openEditaSensor(editaSensor)">Editar sensor</button> 
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-primary" type="button" disabled>Editar Informacion</button> 
+                        </div>
+                        <div *ngIf="cria.id_status == 1; else elseBlock" class="col-auto">
+                            <button class="btn btn-danger" type="button" (click)="registraCuarentena(cria.id_cria)">Pasar a cuarentena</button>
+                        </div>
+                        <ng-template #elseBlock>
+                            <div class="col-auto">
+                                <button class="btn btn-info" type="button" (click)="quitaCuarentena(cria.id_cria)">Quitar de cuarentena</button>
+                            </div>
+                        </ng-template>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <h4 class="text-center">Informacion detallada</h4>
+                        <div class="col-3">
+                            <label class="form-label" for="">Nombre Proveedor</label>
+                            <input class="form-control" value="{{cria.nombreProveedor}}" type="text" readonly>
+                        </div>
+                        <div class="col-3">
+                            <label class="form-label" for="">Fecha de ingreso</label>
+                            <input class="form-control" value="{{cria.fecha | date}}" type="text" readonly>
+                        </div>
+                        <div class="col-3">
+                            <label class="form-label" for="">Clasificacion</label>
+                            <input class="form-control" value="{{clasificacion}}" type="text" readonly>
+                        </div>
+                        <div class="col-3">
+                            <label class="form-label" for="">Status</label>
+                            <input class="form-control" value="{{cria.nombreStatus}}" type="text" readonly>
+                        </div>
+                        <div class="col-3">
+                            <label class="form-label" for="">Peso (kg)</label>
+                            <input class="form-control" value="{{cria.peso}}" type="text" readonly>
+                        </div>
+                        <div class="col-3">
+                            <label class="form-label" for="">Costo ($)</label>
+                            <input class="form-control" value="{{cria.costo | currency}}" type="text" readonly>
+                        </div>
+                        <div class="col-3">
+                            <label class="form-label" for="">Color del musculo</label>
+                            <input class="form-control" value="COLOR {{cria.colorMusculo}}" type="text" readonly>
+                        </div>
+                        <div class="col-3">
+                            <label class="form-label" for="">Marmoleo calidad</label>
+                            <input class="form-control" value="CALIDAD {{cria.marmoleo}}" type="text" readonly>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label" for="">Descripcion</label>
+                            <textarea class="form-control" rows="2" value="{{cria.descripcion}}" readonly></textarea>
+                        </div>
+                        <div class="col-3">
+                            
+                                <label class="form-label" for=""># Sensor</label>
+                            <div class="btn-group">
+                                <input class="form-control" value="{{cria.id_sensor}}" type="text" readonly>
+                                <button class="btn btn-secondary form-control" disabled>Ver detalles</button>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <label class="form-label" for="">Corral</label>
+                            <input class="form-control" value="{{cria.nombreCorral}}" type="text" readonly>
+                        </div>
+                    </div>
+                </div>
+            </form>
+          </div>
+    </div>
+</ng-template>
+
+<!-- Modal edita sensor -->
+<ng-template #editaSensor let-modal>
+    <div class="modal-header" >
+        <h4 class="modal-title" id="modal-basic-title">Ingrese datos del sensor </h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+        <form #FormRegistraSensor="ngForm" (ngSubmit)="registraSensor(FormRegistraSensor)">
+            <div class="modal-body">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-3">
+                            <label class="form-label" for="">Frecuencia cardiaca</label>
+                            <input class="form-control" type="number" maxlength="3" name="freCardiaca" #freCardiaca="ngModel" [(ngModel)]="sensor.freCardiaca" required>
+                            <div [hidden]="freCardiaca.valid || freCardiaca.pristine" class="alert alert-danger">
+                                CAMPO REQUERIDO
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <label class="form-label" for="">Frecuencia respiratoria</label>
+                            <input class="form-control" type="number" maxlength="2" name="freRespiratoria" #freRespiratoria="ngModel" [(ngModel)]="sensor.freRespiratoria" required>
+                            <div [hidden]="freRespiratoria.valid || freRespiratoria.pristine" class="alert alert-danger">
+                                CAMPO REQUERIDO
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <label class="form-label" for="">Presion sanguinea</label>
+                            <input class="form-control" type="text" name="preSanguinea" #preSanguinea="ngModel" [(ngModel)]="sensor.preSanguinea" required>
+                            <div [hidden]="preSanguinea.valid || preSanguinea.pristine" class="alert alert-danger">
+                                CAMPO REQUERIDO
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <label class="form-label" for="">Temperatura</label>
+                            <input class="form-control" type="number" name="temperatura" #temperatura="ngModel" [(ngModel)]="sensor.temperatura" required>
+                            <div [hidden]="temperatura.valid || temperatura.pristine" class="alert alert-danger">
+                                CAMPO REQUERIDO
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <p>Ultima actualizacion {{ultimaActualizacion}}</p>
+                <button type="submit" class="btn btn-outline-dark" [disabled]="FormRegistraSensor.invalid" (click)="modal.close('Save click')">Save</button>
+            </div>
+        </form>
+</ng-template>
+
+
+                

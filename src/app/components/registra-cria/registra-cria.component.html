@@ -1,0 +1,140 @@
+<div class="container-sm">
+    <h3 class="text-center">Registro de nueva cria</h3>
+    <form #FormRegistraCria="ngForm" (ngSubmit)="guardaCria(FormRegistraCria)">
+        <div class="row">
+            <div class="col">
+                <label for="nombreProveedor" class="form-label">Selecciona un proveedor</label>
+                <div class="input-group">
+                    <span class="input-group-addon" id="sizing-addon2"><i class="bi-search" style="font-size: 1.5rem; color: black; left: 0;" (click)="open(content)"></i></span>
+                    <input type="text" class="form-control" name="nombreProveedor" #nombreProveedor="ngModel" [(ngModel)]="cria.nombreProveedor" required readonly>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label class="form-label" for="nombre">Nombre</label>
+                    <input class="form-control" type="text" name="nombre" #nombre="ngModel" [(ngModel)]="cria.nombre" ngModel required>
+                </div>
+                <div [hidden]="nombre.valid || nombre.pristine" class="alert alert-danger">
+                    CAMPO REQUERIDO
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label class="form-label" for="descripcion">Descripcion</label>
+                    <textarea class="form-control" name="descripcion" id="" rows="2" maxlength="254" #descripcion="ngModel" [(ngModel)]="cria.descripcion" ngModel required></textarea>
+                </div>
+                <div [hidden]="descripcion.valid || descripcion.pristine" class="alert alert-danger">
+                    CAMPO REQUERIDO
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label class="form-label" for="">Selecciona el dia de llegada de la cria</label>
+                    <div class="input-group">
+                        <input class="form-control" placeholder="aaaa-mm-dd"
+                            name="dp" [(ngModel)]="model" ngbDatepicker #d="ngbDatepicker" required="">
+                        <button class="btn btn-outline-secondary" (click)="d.toggle()" type="button"><i class="bi bi-calendar-date-fill"> </i> </button>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label class="form-label" for="peso">Peso (kg)</label>
+                    <input class="form-control" type="number" name="peso" #peso="ngModel" [(ngModel)]="cria.peso" required>
+                    <div [hidden]="peso.valid || peso.pristine" class="alert alert-danger">
+                        CAMPO REQUERIDO
+                    </div>
+
+                    <label class="form-label" for="costo">Costo ($)</label>
+                    <input class="form-control" type="number" name="costo" #costo="ngModel" [(ngModel)]="cria.costo" required>
+                    <div [hidden]="costo.valid || costo.pristine" class="alert alert-danger">
+                        CAMPO REQUERIDO
+                    </div>
+
+                    <label class="form-label" for="colorMusculo">Color musculo</label>
+                    <select class="form-select" name="colorMusculo" #colorMusculo="ngModel" [(ngModel)]="cria.colorMusculo" ngModel required>
+                        <option value="1">COLOR MUSCULO 1</option>
+                        <option value="2">COLOR MUSCULO 2</option>
+                        <option value="3">COLOR MUSCULO 3</option>
+                        <option value="4">COLOR MUSCULO 4</option>
+                        <option value="5">COLOR MUSCULO 5</option>
+                        <option value="6">COLOR MUSCULO 6</option>
+                        <option value="7">COLOR MUSCULO 7</option>
+                    </select>
+
+                    <label class="form-label" for="marmoleo">Marmoleo</label>
+                    <select class="form-select" name="marmoleo" #marmoleo="ngModel" [(ngModel)]="cria.marmoleo" ngModel required>
+                        <option value="1">MARMOLEO CALIDAD 1</option>
+                        <option value="2">MARMOLEO CALIDAD 2</option>
+                        <option value="3">MARMOLEO CALIDAD 3</option>
+                        <option value="4">MARMOLEO CALIDAD 4</option>
+                        <option value="5">MARMOLEO CALIDAD 5</option>
+                    </select>
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <!-- <label class="form-label" for="">Sensor (opcional)</label>
+                    <input class="form-control" type="number"> -->
+
+                    <label class="form-label" for="id_corral">Corral</label>
+                    <select class="form-select" name="id_corral" #id_corral="ngModel" [(ngModel)]="cria.id_corral" ngModel required>
+                        <option selected disabled>Abrir para seleccionar</option>
+                        <option *ngFor="let corral of corrales" value="{{corral.id_corral}}">{{corral.nombre}}</option>
+                    </select>
+                    <br>
+                </div>
+            </div>
+            
+            <div class="row justify-content-between">
+                <div class="col">
+                    <button class="btn btn-danger" type="button">Cancelar</button>
+                </div>
+                <div class="col">
+                    <button class="btn btn-primary" type="submit" [disabled]="FormRegistraCria.invalid">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </form>
+    <br>
+</div>
+
+
+<!-- Modal -->
+<ng-template #content let-modal>
+    
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-basic-title">Buscar proveedor</h4>
+            <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+          </div>
+          <div class="modal-body">
+            <div class="col">
+                <input type="text" class="form-control" name="buscaProveedor" placeholder="Buscar . . ." [(ngModel)]="buscaProveedor">
+            </div>
+            <br>
+            <table class="table table-dark table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">NOMBRE</th>
+                        <th scope="col">DIRECCION</th>
+                        <th scope="col">TELEFONO</th>
+                        <th scope="col">CORREO</th>
+                    </tr>
+                </thead>
+                <tbody *ngFor="let proveedor of proveedores  | slice: (page-1) * pageSize : page * pageSize |proveedorpi: buscaProveedor">
+                    <tr (click)="seleccionaProveedor(proveedor.id_proveedor,proveedor.nombre)" (click)="modal.dismiss('Cross click')">
+                        <th scope="row">{{proveedor.id_proveedor}}</th>
+                        <th scope="row">{{proveedor.nombre}}</th>
+                        <th scope="row">{{proveedor.direccion}}</th>
+                        <th scope="row">{{proveedor.telefono}}</th>
+                        <th scope="row">{{proveedor.email}}</th>
+                    </tr>
+                </tbody>
+            </table>
+            <ngb-pagination [(page)]="page" [pageSize]="pageSize" [collectionSize]="proveedores.length"></ngb-pagination>
+            
+          </div>
+</ng-template>
+                    

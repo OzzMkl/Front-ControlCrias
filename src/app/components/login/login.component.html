@@ -1,0 +1,21 @@
+<div class="container">
+    <div class="col-md-12 mt-3">
+        <h2>Inicio de sesion</h2>
+        <p>Indetificate para comenzar!</p>
+        <br>
+        <form class="col-md-5 ml-0 pl-0" #FormLogin="ngForm" (ngSubmit)="enviar(FormLogin)">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" name="email" class="form-control" #email="ngModel" [(ngModel)]="empleado.email" required>
+                <small *ngIf="!email.valid && email.touched" class="invalid-feedback d-block"> El correo no es valido</small>
+            </div>
+            <div class="form-group">
+                <label for="contrasena">Contraseña</label>
+                <input type="password" name="contrasena" class="form-control" #contrasena="ngModel" [(ngModel)]="empleado.contrasena" required>
+                <small *ngIf="!contrasena.valid && contrasena.touched" class="invalid-feedback d-block"> El correo no es valido</small>
+            </div>
+            <br>
+            <input type="submit" value="Iniciar" class="btn btn-success" [disabled]="FormLogin.invalid">
+        </form>
+    </div>
+</div>
