@@ -11,13 +11,16 @@ import { VerCriasModuloComponent } from './components/ver-crias-modulo/ver-crias
 import { VerCriasTodoComponent } from './components/ver-crias-todo/ver-crias-todo.component';
 import { VerCriasEnfermasComponent } from './components/ver-crias-enfermas/ver-crias-enfermas.component';
 
+//guards
+import { CheckTokenGuard } from './guards/checkToken.guard';
+
 const routes: Routes = [
-  {path: '', component:InicioComponent},
+  {path: '', component:InicioComponent, canActivate:[CheckTokenGuard]},
   {path: 'login', component: LoginComponent},
   {path: 'logout/:sure', component: LoginComponent},
-  {path: 'registra-empleado', component: RegistraEmpleadoComponent},
-  {path: 'registra-cria', component: RegistraCriaComponent},
-  {path: 'ver-crias-modulo', component: VerCriasModuloComponent,
+  {path: 'registra-empleado', component: RegistraEmpleadoComponent, canActivate:[CheckTokenGuard]},
+  {path: 'registra-cria', component: RegistraCriaComponent, canActivate:[CheckTokenGuard]},
+  {path: 'ver-crias-modulo', component: VerCriasModuloComponent, canActivate:[CheckTokenGuard],
     children:
     [
       {path: 'ver-crias', component: VerCriasTodoComponent},
